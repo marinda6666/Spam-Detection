@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Вход в систему</h2>
+<form method="POST">
+    <div class="form-group username">
+        <label for="name">Имя пользователя</label>
+        <input type="text" name="username" id="name" />
+    </div>
+    <div class="form-group password">
+        <label for="password">Пароль</label>
+        <input type="password" name="password" id="password" />
+    </div>
+    <div class="checkbox-group">
+        <input type="checkbox" name="remember" id="remember">
+        <label for="remember">Запомнить меня</label>
+    </div>
+    <button type="submit">Войти</button>
+</form>
+{% endblock %}
