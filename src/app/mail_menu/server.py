@@ -9,4 +9,4 @@ def index():
     return render_template('menu.html')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5400)
+    app.run(host='0.0.0.0', port=5000)
