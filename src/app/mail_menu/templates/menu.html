@@ -345,7 +345,7 @@
             <div class="profile-section" onclick="location.href='/profile'">
                 <div class="profile-avatar">👤</div>
                 <div class="profile-info">
-                    <div class="profile-name">Иван Петров</div>
+                    <div class="profile-name">{{username}}</div>
                     <div class="profile-status">В сети</div>
                 </div>
             </div>
@@ -353,10 +353,12 @@
 
         <!-- Левая боковая панель -->
         <div class="sidebar">
-            <button class="compose-button" onclick="location.href='/compose'">
-                <span>✍️</span>
-                <span>Написать</span>
-            </button>
+            <form action="/compose" method="get">
+                <button class="compose-button" type="submit">
+                    <span>✍️</span>
+                    <span>Написать</span>
+                </button>
+            </form>
 
             <div class="nav-menu">
                 <div class="nav-item active" onclick="location.href='/inbox'">
@@ -389,7 +391,7 @@
                     <button class="action-btn">🗑️ Удалить</button>
                 </div>
             </div>
-
+            
             <div class="mail-list">
                 <div class="mail-item unread">
                     <div class="mail-sender">Алексей Смирнов</div>
