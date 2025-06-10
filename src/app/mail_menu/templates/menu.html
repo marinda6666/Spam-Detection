@@ -1,7 +1,7 @@
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Почтовый клиент</title>
+        <title>Inbox</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
@@ -172,7 +172,7 @@
 
             .nav-text {
                 flex: 1;
-                font-size: 15px;
+                font-size: 17px;
             }
 
             .nav-badge {
@@ -242,6 +242,8 @@
                 border-bottom: 1px solid #f0f0f0;
                 cursor: pointer;
                 transition: all 0.3s ease;
+                text-decoration: none; /* Убираем подчеркивание */
+                color: inherit; /* Сохраняем цвет текста */
             }
 
             .mail-item:hover {
@@ -356,7 +358,7 @@
                 <form action="/compose" method="get">
                     <button class="compose-button" type="submit">
                         <span>✍️</span>
-                        <span>Написать</span>
+                        <span>New message</span>
                     </button>
                 </form>
 
@@ -365,8 +367,7 @@
                     <form action="/menu" method="get">
                         <button type="submit">
                         <span class="nav-icon">📥</span>
-                        <span class="nav-text">Входящие</span>
-                        <span class="nav-badge">12</span>
+                        <span class="nav-text">Inbox</span>
                         </button>
                     </form>
                     </div>
@@ -375,18 +376,16 @@
                     <form action="/sentmsg" method="get">
                         <button type="submit">
                             <span class="nav-icon">📤</span>
-                            <span class="nav-text">Отправленные</span>
-                            <span class="nav-badge">12</span>
+                            <span class="nav-text">Sent</span>
                         </button>
                     </form>
                     </div>
                     
                     <div class="nav-item">
-                    <form action="/sentmsg" method="get">
+                    <form action="/spam" method="get">
                         <button type="submit">
                         <span class="nav-icon">🚫</span>
-                        <span class="nav-text">Спам</span>
-                        <span class="nav-badge">3</span>
+                        <span class="nav-text">Spam</span>
                         </button>
                     </form>
                     </div>
@@ -394,62 +393,30 @@
                 </div>
             </div>
 
-            <!-- Центральная область писем -->
             <div class="mail-content">
-                <div class="mail-header">
-                    <h2 class="mail-title">Входящие</h2>
-                    <!-- <div class="mail-actions">
-                        <button class="action-btn">🔄 Обновить</button>
-                        <button class="action-btn">📋 Выбрать все</button>
-                        <button class="action-btn">🗑️ Удалить</button>
-                    </div> -->
-                </div>
-                
-                <div class="mail-list">
-                    <div class="mail-item unread">
-                        <div class="mail-sender">Алексей Смирнов</div>
-                        <div class="mail-subject">Важное предложение по проекту машинного обучения</div>
-                        <div class="mail-time">10:30</div>
-                        <div class="mail-attachment">📎</div>
-                    </div>
-
-                    <div class="mail-item unread">
-                        <div class="mail-sender">GitHub</div>
-                        <div class="mail-subject">Новый pull request в репозитории spam-detection</div>
-                        <div class="mail-time">09:15</div>
-                    </div>
-
-                    <div class="mail-item">
-                        <div class="mail-sender">Мария Иванова</div>
-                        <div class="mail-subject">Настройка веб-сервера и конфигурация портов</div>
-                        <div class="mail-time">Вчера</div>
-                    </div>
-
-                    <div class="mail-item">
-                        <div class="mail-sender">Stack Overflow</div>
-                        <div class="mail-subject">Новые ответы на ваш вопрос о Flask и PostgreSQL</div>
-                        <div class="mail-time">Вчера</div>
-                    </div>
-
-                    <div class="mail-item">
-                        <div class="mail-sender">Python Weekly</div>
-                        <div class="mail-subject">Лучшие библиотеки для машинного обучения в 2025</div>
-                        <div class="mail-time">2 дня</div>
-                    </div>
-
-                    <div class="mail-item">
-                        <div class="mail-sender">Coursera</div>
-                        <div class="mail-subject">Новый курс по scikit-learn и классификации данных</div>
-                        <div class="mail-time">3 дня</div>
-                    </div>
-
-                    <div class="mail-item">
-                        <div class="mail-sender">DevOps News</div>
-                        <div class="mail-subject">Современные подходы к настройке серверов</div>
-                        <div class="mail-time">4 дня</div>
-                    </div>
-                </div>
+            <div class="mail-header">
+                <h2 class="mail-title">Inbox</h2>
             </div>
+            
+            <div class="mail-list">
+                {% for message in messages %}
+                <a href="/message/{{ message.id }}" class="mail-item">
+                    <div class="mail-sender">{{ message.from_name }}</div>
+                    <div class="mail-subject">{{ message.subject }}</div>
+                    <div class="mail-time">
+                        
+                            {{ message.sent_at.strftime('%d.%m') }}
+                    </div>
+                </a>
+                {% endfor %}
+                
+                {% if not messages %}
+                <div style="text-align: center; padding: 50px; color: #888;">
+                    <h3>No messages</h3>
+                </div>
+                {% endif %}
+            </div>
+        </div>
         </div>
     </body>
     </html>

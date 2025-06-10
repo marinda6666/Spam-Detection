@@ -4,14 +4,30 @@ import random
 import jwt
 import os
 
+from models import Message, Spam
+from extensions import db
+
 # sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
 load_dotenv()
 emoji = ['🙃', '🥶', '🤠', '🤡', '😋', '😼', '🦜', '🐶', '🐨', '🐧']
 
 
-app = Flask(__name__)
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+
 SECRET_KEY = os.getenv("SECRET_KEY")
+
+app = Flask(__name__)
+
 app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    f"postgresql://{DB_USER}:{DB_PASSWORD}@host.docker.internal:{DB_PORT}/{DB_NAME}"
+)
+
+db.init_app(app)
 
 
 def get_username_from_jwt(token):
@@ -30,16 +46,31 @@ def index():
     username = get_username_from_jwt(token) if token else None
     if not username:
         return redirect('http://localhost:8080/login')
-    return render_template('menu.html', username=username, icon=random.choice(emoji))
+    
+    messages = Message.query.filter_by(to_name=username).all()
+
+    return render_template('menu.html', 
+                           username=username, 
+                           icon=random.choice(emoji),
+                           messages=messages)
 
 
-@app.route('/compose', methods=['GET'])
+@app.route('/compose', methods=['GET', 'POST'])
 def compose():
     token = request.cookies.get('jwt_token')
     username = get_username_from_jwt(token) if token else None
     if not username:
         return redirect('http://localhost:8080/login')
-    
+    if request.method == 'POST':
+        error = False
+        recipient = request.form['recipient']
+        subject = request.form['subject']
+        body = request.form['body']
+        db.session.add(Message(from_name=username,
+                               to_name=recipient,
+                               subject=subject,
+                               body=body))
+        db.session.commit()
     return render_template('compose.html', username=username, icon=random.choice(emoji))
 
 
@@ -49,7 +80,12 @@ def sentmsg():
     username = get_username_from_jwt(token) if token else None
     if not username:
         return redirect('http://localhost:8080/login')
-    return render_template('sent.html', username=username, icon=random.choice(emoji))
+    messages = Message.query.filter_by(from_name=username).all()
+
+    return render_template('sent.html', 
+                           username=username, 
+                           icon=random.choice(emoji),
+                           messages=messages)
 
 
 @app.route('/spam', methods=['GET'])
@@ -58,8 +94,29 @@ def spam():
     username = get_username_from_jwt(token) if token else None
     if not username:
         return redirect('http://localhost:8080/login')
-    return render_template('spam.html', username=username, icon=random.choice(emoji))
+    messages = Spam.query.filter_by(to_name=username).all()
+
+    return render_template('spam.html', 
+                           username=username, 
+                           icon=random.choice(emoji),
+                           messages=messages)
 
 
+@app.route('/message/<int:message_id>')
+def message(message_id: int):
+    token = request.cookies.get('jwt_token')
+    username = get_username_from_jwt(token) if token else None
+    if not username:
+        return redirect('http://localhost:8080/login')
+    
+    message = Message.query.get(message_id)
+    if not message:
+        return redirect('/menu')
+    
+    
+    return render_template('message.html',
+                            username=username,
+                            icon=random.choice(emoji),
+                            message=message)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
