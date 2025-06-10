@@ -7,6 +7,7 @@ import datetime
 
 from extensions import db
 from models import User
+
 # sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
 
 load_dotenv()
@@ -63,10 +64,7 @@ def get_username_from_jwt(token):
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     get_flashed_messages()
-    token = request.cookies.get('jwt_token')
-    username = get_username_from_jwt(token) if token else None
-    # if username:
-    #     return redirect('http://localhost:8080/menu')
+    
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -83,9 +81,15 @@ def login():
                 response = make_response(redirect('http://localhost:8080/menu'))
                 response.set_cookie(
                                     'jwt_token', 
-                                    token, 
-                                    httponly=True, 
-                                    path='/')
+                                    token,
+                                    httponly=True,
+                                    secure=False,      
+                                    samesite='Lax',   
+                                    domain='localhost',
+                                    path='/',         
+                                    max_age=86400     
+                                )
+
                 return response
             else:
                 flash('ошибка', category='error')
@@ -96,8 +100,8 @@ def login():
 
 
 
-@app.route('/register', methods=['POST', 'GET'])
-def register():
+@app.route('/registerr', methods=['POST', 'GET'])
+def registerr():
     get_flashed_messages()
 
     if request.method == 'POST':

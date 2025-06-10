@@ -16,9 +16,10 @@
     </div>
     <button type="submit">Войти</button>
 </form>
-<div>
-    <p></p>
-    <a href="{{ url_for('register') }}">Зарегистрироваться</a>
+<div class="register-link">
+  <form action="/registerr" method="get">
+    <a href="/registerr">Зарегистрироваться</a>
+  </form>
 </div>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
