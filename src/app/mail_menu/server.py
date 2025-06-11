@@ -47,7 +47,7 @@ def index():
     if not username:
         return redirect('http://localhost:8080/login')
     
-    messages = Message.query.filter_by(to_name=username).all()
+    messages = Message.query.filter_by(to_name=username).all()[::-1]
 
     return render_template('menu.html', 
                            username=username, 
@@ -80,7 +80,7 @@ def sentmsg():
     username = get_username_from_jwt(token) if token else None
     if not username:
         return redirect('http://localhost:8080/login')
-    messages = Message.query.filter_by(from_name=username).all()
+    messages = Message.query.filter_by(from_name=username).all()[::-1]
 
     return render_template('sent.html', 
                            username=username, 
@@ -94,7 +94,7 @@ def spam():
     username = get_username_from_jwt(token) if token else None
     if not username:
         return redirect('http://localhost:8080/login')
-    messages = Spam.query.filter_by(to_name=username).all()
+    messages = Spam.query.filter_by(to_name=username).all()[::-1]
 
     return render_template('spam.html', 
                            username=username, 
@@ -112,6 +112,23 @@ def message(message_id: int):
     message = Message.query.get(message_id)
     if not message:
         return redirect('/menu')
+    
+    
+    return render_template('message.html',
+                            username=username,
+                            icon=random.choice(emoji),
+                            message=message)
+
+@app.route('/spam_message/<int:message_id>')
+def spam_message(message_id: int):
+    token = request.cookies.get('jwt_token')
+    username = get_username_from_jwt(token) if token else None
+    if not username:
+        return redirect('http://localhost:8080/login')
+    
+    message = Spam.query.get(message_id)
+    if not message:
+        return redirect('/spam')
     
     
     return render_template('message.html',
