@@ -1,5 +1,6 @@
 # Spam-Detection
 
 **Run**:
-```cd src```
-```sudo docker-compose up --build```
+```bash
+cd src
+sudo docker-compose up --build```
