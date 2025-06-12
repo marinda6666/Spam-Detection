@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Log in</h2>
+<form method="POST">
+    <div class="form-group username">
+        <label for="name">Username</label>
+        <input type="text" name="username" id="name" />
+    </div>
+    <div class="form-group password">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" />
+    </div>
+    <div class="checkbox-group">
+        <input type="checkbox" name="remember" id="remember">
+        <label for="remember">Remember me</label>
+    </div>
+    <button type="submit">Enter</button>
+</form>
+<div class="register-link">
+  <form action="/registerr" method="get">
+    <a href="/registerr">Registration</a>
+  </form>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash-message {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+{% endblock %}

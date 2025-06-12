@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New message</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* --- Стили из основного шаблона --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            background: #e9ecef;
+            height: 100vh;
+            overflow: hidden;
+            color: #333;
+        }
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            grid-template-rows: 70px 1fr;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            margin: 10px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: rgb(255, 255, 255);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .profile-section:hover { background: rgba(255,255,255,0.1); }
+        .profile-avatar {
+            width: 40px; height: 40px; border-radius: 50%; background: white;
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+        .profile-info { display: flex; flex-direction: column; }
+        .profile-name { font-weight: 600; font-size: 14px; }
+        .profile-status { font-size: 12px; opacity: 0.8; }
+        .sidebar {
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+        .compose-button {
+            margin: 0 20px 30px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white; border: none; border-radius: 12px;
+            padding: 15px 20px; font-size: 16px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease; display: flex;
+            align-items: center; gap: 10px; justify-content: center;
+        }
+        .compose-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        .nav-menu {
+                flex: 1;
+            }
+
+            .nav-item {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding: 0; /* убираем существующий padding */
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border-left: 3px solid transparent;
+                position: relative;
+            }
+
+            .nav-item form {
+                width: 100%;
+                height: 100%;
+            }
+
+            .nav-item button {
+                background: transparent;
+                border: none;
+                padding: 20px; /* увеличиваем область клика */
+                margin: -5px; /* компенсируем визуальное смещение */
+                cursor: pointer;
+                color: inherit;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+
+            .nav-item button:focus {
+                outline: none;
+            }
+
+            .nav-item:hover {
+                background: rgba(102, 126, 234, 0.1);
+                border-left-color: #667eea;
+            }
+
+            .nav-item.active {
+                background: rgba(102, 126, 234, 0.15);
+                border-left-color: #667eea;
+                font-weight: 600;
+            }
+
+            .nav-icon {
+                font-size: 20px;
+                width: 24px;
+                text-align: center;
+            }
+
+            .nav-text {
+                flex: 1;
+                font-size: 17px;
+                text-align: left;
+            }
+        .nav-badge {
+            background: #ff4757; color: white; border-radius: 10px;
+            padding: 2px 8px; font-size: 12px; font-weight: bold; min-width: 20px; text-align: center;
+        }
+        .mail-content {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 40px 60px;
+            justify-content: flex-start;
+        }
+        .compose-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .compose-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 600px;
+        }
+        .compose-label {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        .compose-input, .compose-textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+            background: #fafbfc;
+        }
+        .compose-input:focus, .compose-textarea:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        .compose-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .compose-submit {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .compose-submit:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+        @media (max-width: 768px) {
+            .dashboard-container { grid-template-columns: 1fr; grid-template-rows: 70px 60px 1fr; margin: 5px; }
+            .sidebar { grid-row: 2; flex-direction: row; padding: 10px; overflow-x: auto; }
+            .compose-button { margin: 0 10px 0 0; min-width: 120px; }
+            .nav-menu { display: flex; gap: 10px; }
+            .nav-item { min-width: 100px; padding: 10px; border-left: none; border-bottom: 3px solid transparent; text-align: center; flex-direction: column; gap: 5px; }
+            .nav-item:hover, .nav-item.active { border-left: none; border-bottom-color: #667eea; }
+            .nav-text { font-size: 12px; }
+            .profile-info { display: none; }
+            .mail-content { padding: 20px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Верхняя панель -->
+        <div class="header">
+            <div class="logo">
+                <!-- <span>📧</span> -->
+                <span>telegram 2</span>
+            </div>
+            <div class="profile-section" onclick="location.href='/profile'">
+                <div class="profile-avatar">{{icon}}</div>
+                <div class="profile-info">
+                    <div class="profile-name">{{username}}</div>
+                    <div class="profile-status">online</div>
+                </div>
+            </div>
+        </div>
+        <!-- Левая боковая панель -->
+        <div class="sidebar">
+            <form action="/compose" method="get">
+                <button class="compose-button" type="submit">
+                    <span>✍️</span>
+                    <span>New message</span>
+                </button>
+            </form>
+
+            
+            <div class="nav-menu">
+                <div class="nav-item">
+                <form action="/menu" method="get">
+                    <button type="submit">
+                    <span class="nav-icon">📥</span>
+                    <span class="nav-text">Inbox</span>
+                    </button>
+                </form>
+                </div>
+
+                <div class="nav-item">
+                <form action="/sentmsg" method="get">
+                    <button type="submit">
+                        <span class="nav-icon">📤</span>
+                        <span class="nav-text">Sent</span>
+                    </button>
+                </form>
+                </div>
+                
+                <div class="nav-item">
+                <form action="/spam" method="get">
+                    <button type="submit">
+                    <span class="nav-icon">🚫</span>
+                    <span class="nav-text">Spam</span>
+                    </button>
+                </form>
+                </div>
+
+            </div>
+        </div>
+        <!-- Центральная область: форма написания письма -->
+        <div class="mail-content">
+            <div class="compose-title">New message</div>
+            <form class="compose-form" method="post" action="http://localhost:8080/compose">
+                <div>
+                    <label class="compose-label" for="recipient">to:</label>
+                    <input class="compose-input" type="text" id="recipient" name="recipient" placeholder="username" required>
+                </div>
+                <div>
+                    <label class="compose-label" for="subject">about:</label>
+                    <input class="compose-input" type="text" id="subject" name="subject" placeholder="theme" required>
+                </div>
+                <div>
+                    <label class="compose-label" for="body">message:</label>
+                    <textarea class="compose-textarea" id="body" name="body" placeholder="..." required></textarea>
+                </div>
+                <button class="compose-submit" type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Message</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #e9ecef;
+            height: 100vh;
+            overflow: hidden;
+            color: #333;
+        }
+        .nav-menu {
+                flex: 1;
+            }
+
+            .nav-item {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding: 0; /* убираем существующий padding */
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border-left: 3px solid transparent;
+                position: relative;
+            }
+
+            .nav-item form {
+                width: 100%;
+                height: 100%;
+            }
+
+            .nav-item button {
+                background: transparent;
+                border: none;
+                padding: 20px; /* увеличиваем область клика */
+                margin: -5px; /* компенсируем визуальное смещение */
+                cursor: pointer;
+                color: inherit;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+
+            .nav-item button:focus {
+                outline: none;
+            }
+
+            .nav-item:hover {
+                background: rgba(102, 126, 234, 0.1);
+                border-left-color: #667eea;
+            }
+
+            .nav-item.active {
+                background: rgba(102, 126, 234, 0.15);
+                border-left-color: #667eea;
+                font-weight: 600;
+            }
+
+            .nav-icon {
+                font-size: 20px;
+                width: 24px;
+                text-align: center;
+            }
+
+            .nav-text {
+                flex: 1;
+                font-size: 17px;
+                text-align: left;
+            }
+
+        .nav-badge {
+            background: #ff4757;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+        }
+        .compose-button {
+                margin: 0 20px 30px 20px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                padding: 15px 20px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                justify-content: center;
+            }
+
+        .compose-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            grid-template-rows: 70px 1fr;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            margin: 10px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-section:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .profile-status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+
+        .back-button {
+            margin: 0 20px 30px 20px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+
+        .message-content {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .message-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            padding: 30px;
+        }
+
+        .message-subject {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .message-date {
+            color: #888;
+        }
+
+        .message-body {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .message-actions {
+            padding: 20px 30px;
+            border-top: 1px solid #e9ecef;
+            background: #f8f9fa;
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            background: #f0f0f0;
+            border-color: #667eea;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .action-btn.reply {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .action-btn.reply:hover {
+            background: #5a67d8;
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .action-btn.delete:hover {
+            background: #c82333;
+            color: white;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 70px 1fr;
+                margin: 5px;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .message-header {
+                padding: 20px;
+            }
+
+            .message-subject {
+                font-size: 22px;
+            }
+
+            .message-body {
+                padding: 20px;
+            }
+
+            .message-actions {
+                padding: 15px 20px;
+                flex-wrap: wrap;
+            }
+
+            .profile-info {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Верхняя панель -->
+        <div class="header">
+            <div class="logo">
+                <span>telegram 2</span>
+            </div>
+            <div class="profile-section" onclick="location.href='/profile'">
+                <div class="profile-avatar">{{icon}}</div>
+                <div class="profile-info">
+                    <div class="profile-name">{{username}}</div>
+                    <div class="profile-status">online</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Левая боковая панель -->
+         <div class="sidebar">
+                <form action="/compose" method="get">
+                    <button class="compose-button" type="submit">
+                        <span>✍️</span>
+                        <span>New message</span>
+                    </button>
+                </form>
+
+                <div class="nav-menu">
+                    <div class="nav-item">
+                    <form action="/menu" method="get">
+                        <button type="submit">
+                        <span class="nav-icon">📥</span>
+                        <span class="nav-text">Inbox</span>
+                        </button>
+                    </form>
+                    </div>
+
+                    <div class="nav-item">
+                    <form action="/sentmsg" method="get">
+                        <button type="submit">
+                            <span class="nav-icon">📤</span>
+                            <span class="nav-text">Sent</span>
+                        </button>
+                    </form>
+                    </div>
+                    
+                    <div class="nav-item">
+                    <form action="/spam" method="get">
+                        <button type="submit">
+                        <span class="nav-icon">🚫</span>
+                        <span class="nav-text">Spam</span>
+                        </button>
+                    </form>
+                    </div>
+
+                </div>
+            </div>
+
+        <!-- Содержимое сообщения -->
+        <div class="message-content">
+            <div class="message-header">
+                <h1 class="message-subject">{{ message.subject }}</h1>
+                <div class="message-meta">
+                    <div>
+                        <span>from: </span>
+                        <span class="message-sender">{{ message.from_name }}</span><br>
+                        <span>to: </span>
+                        <span class="message-sender">{{ message.to_name }}</span>
+                    </div>
+                    <div class="message-date">
+                        {{ message.sent_at.strftime('%d.%m.%Y в %H:%M') }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="message-body">
+                {{ message.body }}
+            </div>
+
+        </div>
+    </div>
+
+    
+</body>
+</html>
