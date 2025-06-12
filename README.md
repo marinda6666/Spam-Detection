@@ -3,4 +3,5 @@
 **Run**:
 ```bash
 cd src
-sudo docker-compose up --build```
+sudo docker-compose up --build
+```
