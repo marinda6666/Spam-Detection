@@ -2,3 +2,4 @@ data/train/*.csv
 .vscode
 .idea
 *.pickle
+*/__pycache__

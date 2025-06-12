@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth
+      - mail_system
+    networks:
+      - app-network
+  
+  auth:
+    build: ./app/auth
+    expose:
+      - "5001"
+    networks:
+      - app-network
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+
+  mail_system:
+    build: ./app/mail_menu
+    expose:
+      - "5000"
+    networks:
+      - app-network
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+
+  spam_detector:
+    build: ./app/spam_detector
+    expose:
+      - "8001"
+    networks:
+      - app-network
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+
+networks:
+  app-network:
+    driver: bridge
