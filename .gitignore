@@ -3,3 +3,4 @@ data/train/*.csv
 .idea
 *.pickle
 */mlruns
+*/__pycache__
