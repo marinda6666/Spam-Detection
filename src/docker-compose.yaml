@@ -31,6 +31,15 @@ services:
     extra_hosts:
       - "host.docker.internal:172.17.0.1"
 
+  spam_detector:
+    build: ./app/spam_detector
+    expose:
+      - "8001"
+    networks:
+      - app-network
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+
 networks:
   app-network:
     driver: bridge

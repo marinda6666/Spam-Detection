@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, redirect
 from dotenv import load_dotenv
+import requests
 import random
 import jwt
 import os
@@ -62,15 +63,26 @@ def compose():
     if not username:
         return redirect('http://localhost:8080/login')
     if request.method == 'POST':
-        error = False
         recipient = request.form['recipient']
         subject = request.form['subject']
         body = request.form['body']
-        db.session.add(Message(from_name=username,
-                               to_name=recipient,
-                               subject=subject,
-                               body=body))
-        db.session.commit()
+
+        response = requests.get('http://spam_detector:8001/get_prediction', params={'msg': subject + ' ' + body}, timeout=5)
+        if response.status_code == 200:
+            result = response.json()
+            is_spam = result.get('is_spam', 0)
+            if is_spam:
+                db.session.add(Spam(from_name=username,
+                                       to_name=recipient,
+                                       subject=subject,
+                                       body=body))
+                db.session.commit()
+            else:
+                db.session.add(Message(from_name=username,
+                                    to_name=recipient,
+                                    subject=subject,
+                                    body=body))
+                db.session.commit()
     return render_template('compose.html', username=username, icon=random.choice(emoji))
 
 
